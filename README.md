@@ -1,9 +1,9 @@
 # Treza — Trezor SSH GUI
 
 > ⚠️ **Work in progress — not yet usable as an end-user app.** The headless
-> agent core works today; the graphical interface, packaged installers, and the
-> Trezor Safe 3 hardware validation are still to come (see the roadmap below).
-> Not recommended for production use yet.
+> agent core and a first desktop GUI exist; packaged installers and the Trezor
+> Safe 3 hardware validation are still to come (see the roadmap below). Not
+> recommended for production use yet.
 
 A cross-platform desktop app (Windows / macOS / Linux) that lets a **Trezor**
 hardware device be used as an SSH key, managed from a GUI — no terminal agent
@@ -23,70 +23,70 @@ Early development. Issues and pull requests are welcome — see
 | Milestone | What | State |
 |-----------|------|-------|
 | M0 | Trezor **Safe 3** spike (real SSH login) | ⏳ hardware validation pending |
-| M1 | Headless agent integration core | ✅ device-independent core done & tested |
-| M2 | Key-management UI (PySide6) | ⬜ planned |
-| M3 | System tray + background operation | ⬜ planned |
-| M4 | Onboarding / first-run wizard | ⬜ planned |
-| M5 | Packaging, signing & CI | ⬜ planned |
+| M1 | Headless agent integration core | ✅ done & tested |
+| M2 | Key-management UI (PySide6) | ✅ implemented |
+| M3 | System tray + background operation | ✅ implemented |
+| M4 | Onboarding / first-run wizard | ✅ implemented |
+| M5 | Packaging, signing & CI | 🚧 in progress |
 
-### What works today (headless, no GUI yet)
+## Install on Windows
 
-```bash
-python -m treza --status                       # detect a connected Trezor
-python -m treza --add ssh://user@host          # add an identity (ed25519)
-python -m treza --list                         # list stored identities
-python -m treza --serve                        # run the SSH agent (Ctrl+C to stop)
+> No signed installer yet (that's milestone M5). For now you run from source.
+
+**1. Prerequisites**
+
+* **Python 3.11+** — install from [python.org](https://www.python.org/downloads/windows/)
+  and tick *"Add python.exe to PATH"*.
+* **Git** — [git-scm.com](https://git-scm.com/download/win).
+* **OpenSSH client** — ships with Windows 10/11 (`ssh` is already on `PATH`).
+
+**2. Free up the SSH-agent named pipe.** Windows has a built-in `ssh-agent`
+service that claims `\\.\pipe\openssh-ssh-agent` — the same pipe Treza serves
+on. Disable it once, in an **Administrator** PowerShell:
+
+```powershell
+Stop-Service ssh-agent
+Set-Service ssh-agent -StartupType Disabled
 ```
 
-On Windows the agent serves the OpenSSH-compatible named pipe
-`\\.\pipe\openssh-ssh-agent`; on Unix it exports `SSH_AUTH_SOCK`. Standard SSH
-clients then route signing to the Trezor automatically.
+**3. Install Treza** (regular PowerShell):
+
+```powershell
+git clone https://github.com/pltlg/treza.git
+cd treza
+python -m venv .venv
+.venv\Scripts\pip install -e ".[gui]"
+```
+
+**4. Run it:**
+
+```powershell
+.venv\Scripts\python -m treza          # launches the GUI
+```
+
+On first run an onboarding wizard walks you through enabling the agent and
+exporting your first key. Connect and unlock your Trezor when prompted; every
+signature must be confirmed on the device.
+
+**5. Use it with your tools.** Once the agent is running, standard clients pick
+it up automatically over the named pipe:
+
+```powershell
+ssh-add -l            # should list your Treza identities
+ssh user@server       # confirm the login on the Trezor
+git clone git@github.com:you/repo.git
+```
+
+VS Code Remote-SSH uses the same `ssh`, so it works with no extra setup.
+
+> Headless / no GUI: `python -m treza --serve` runs just the agent;
+> `python -m treza --help` lists the CLI.
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    subgraph clients["OS SSH clients"]
-        SSH["ssh · git · VS Code Remote-SSH"]
-    end
+![Treza architecture](docs/architecture.png)
 
-    subgraph front["Treza front-end"]
-        CLI["CLI — python -m treza"]
-        GUI["GUI / Tray · PySide6 — M2/M3"]
-    end
-
-    subgraph seam["treza.agent — libagent coupling seam"]
-        MGR["AgentManager<br/>state machine · worker thread"]
-        BRIDGE["CallbackUI<br/>confirm / PIN events"]
-        IDS["IdentityStore · SshIdentity"]
-        DEV["device — status"]
-    end
-
-    subgraph up["libagent · trezorlib · pinned upstream"]
-        SERVE["ssh.serve<br/>server · protocol.Handler"]
-        CLIENT["ssh.client.Client<br/>JustInTimeConnection"]
-        TREZOR["device.trezor.Trezor"]
-        FMT["formats · interface.Identity"]
-        UIBASE["device.ui.UI"]
-    end
-
-    HW(["Trezor Safe 3 · USB"])
-
-    SSH -->|"agent protocol<br/>pipe / SSH_AUTH_SOCK"| SERVE
-    CLI --> MGR
-    GUI --> MGR
-    GUI --> DEV
-    MGR -->|runs| SERVE
-    MGR -->|installs as Trezor.ui| BRIDGE
-    MGR --> IDS
-    SERVE --> CLIENT
-    CLIENT --> TREZOR
-    BRIDGE -. subclasses .-> UIBASE
-    TREZOR -->|"button_request / PIN"| BRIDGE
-    IDS --> FMT
-    TREZOR -->|"sign · on-device confirm"| HW
-    DEV -->|"trezorlib enumerate / features"| HW
-```
+<sub>Diagram source: [`docs/architecture.mmd`](docs/architecture.mmd) (Mermaid).</sub>
 
 * `treza/agent/` — the **only** place that touches `libagent`/`trezorlib`
   (an upstream-coupling seam, guarded by `tests/test_coupling.py`):
@@ -98,11 +98,17 @@ flowchart TD
   * `identities.py` — `SshIdentity` + `IdentityStore`: identity model, public-key
     export, and persistence in `libagent`'s `<identity|curve>` config format.
   * `device.py` — connection detection and model/firmware/lock status.
+  * `agentclient.py` — minimal SSH-agent protocol client (reads public keys from
+    the running agent without opening a second device session).
+* `treza/gui/` — the PySide6 front-end: `controller.py` (marshals agent worker
+  callbacks onto the Qt thread via signals), `main_window.py`, `tray.py`,
+  `onboarding.py`, dialogs, and state icons.
 
 All device I/O happens on one worker thread; `trezorlib` handles are not
-thread-safe. GUI consumers must marshal state callbacks onto the UI thread.
+thread-safe. The GUI never calls the device directly — it goes through the
+controller's signals.
 
-## Getting started (from source)
+## Getting started (from source, any OS)
 
 Requires Python 3.11+ and the OpenSSH client (`ssh`) on your `PATH`.
 

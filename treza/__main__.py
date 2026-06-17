@@ -1,11 +1,12 @@
 """Treza entry point.
 
-The GUI (PySide6) arrives in Milestone 2. Until then this exposes a small
-headless CLI over the Milestone 1 agent core — useful for development and for
-the Milestone 0 hardware validation:
+With no arguments this launches the graphical app. It also exposes a small
+headless CLI over the agent core — useful for development and the Trezor
+hardware validation:
 
-    python -m treza --list                       # show stored identities
-    python -m treza --add ssh://user@host         # add an identity (ed25519)
+    python -m treza                                # launch the GUI
+    python -m treza --list                         # show stored identities
+    python -m treza --add ssh://user@host          # add an identity (ed25519)
     python -m treza --serve                        # run the agent (Ctrl+C to stop)
     python -m treza --serve --identity ssh://u@h   # serve an ad-hoc identity
 """
@@ -34,6 +35,13 @@ def _parse_identity(s: str, curve: str) -> SshIdentity:
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    # No arguments → launch the graphical app.
+    if not argv:
+        from .gui.app import main as gui_main
+
+        return gui_main()
+
     parser = argparse.ArgumentParser(prog="treza", description=__doc__)
     parser.add_argument("--list", action="store_true", help="list stored identities")
     parser.add_argument("--add", metavar="IDENTITY", help="add ssh://user@host[:port]")

@@ -13,7 +13,7 @@ from __future__ import annotations
 import pytest
 from libagent.device.trezor import Trezor
 
-from tests.agent_protocol import request_identities_count
+from treza.agent.agentclient import request_identities_count
 from treza.agent.identities import ED25519, NIST256, SshIdentity, export_public_key
 from treza.agent.manager import AgentManager, AgentState
 from treza.agent.ui_bridge import CallbackUI

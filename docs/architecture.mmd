@@ -1,0 +1,41 @@
+flowchart TD
+    subgraph clients["OS SSH clients"]
+        SSH["ssh · git · VS Code Remote-SSH"]
+    end
+
+    subgraph front["Treza front-end"]
+        CLI["CLI — python -m treza"]
+        GUI["GUI / Tray · PySide6"]
+    end
+
+    subgraph seam["treza.agent — libagent coupling seam"]
+        MGR["AgentManager<br/>state machine · worker thread"]
+        BRIDGE["CallbackUI<br/>confirm / PIN events"]
+        IDS["IdentityStore · SshIdentity"]
+        DEV["device — status"]
+    end
+
+    subgraph up["libagent · trezorlib · pinned upstream"]
+        SERVE["ssh.serve<br/>server · protocol.Handler"]
+        CLIENT["ssh.client.Client<br/>JustInTimeConnection"]
+        TREZOR["device.trezor.Trezor"]
+        FMT["formats · interface.Identity"]
+        UIBASE["device.ui.UI"]
+    end
+
+    HW(["Trezor Safe 3 · USB"])
+
+    SSH -->|"agent protocol<br/>pipe / SSH_AUTH_SOCK"| SERVE
+    CLI --> MGR
+    GUI --> MGR
+    GUI --> DEV
+    MGR -->|runs| SERVE
+    MGR -->|installs as Trezor.ui| BRIDGE
+    MGR --> IDS
+    SERVE --> CLIENT
+    CLIENT --> TREZOR
+    BRIDGE -. subclasses .-> UIBASE
+    TREZOR -->|"button_request / PIN"| BRIDGE
+    IDS --> FMT
+    TREZOR -->|"sign · on-device confirm"| HW
+    DEV -->|"trezorlib enumerate / features"| HW

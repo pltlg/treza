@@ -11,7 +11,7 @@ import sys
 
 from libagent.device.fake_device import FakeDevice
 
-from tests.agent_protocol import request_identities_count
+from treza.agent.agentclient import request_identities_count
 from treza.agent.identities import NIST256, SshIdentity
 from treza.agent.manager import AgentManager, AgentState
 
