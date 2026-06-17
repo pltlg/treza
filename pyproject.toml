@@ -34,6 +34,9 @@ dev = [
 [project.scripts]
 treza = "treza.__main__:main"
 
+[tool.setuptools]
+license-files = ["COPYING", "COPYING.LESSER"]
+
 [tool.setuptools.packages.find]
 include = ["treza*"]
 

@@ -166,5 +166,7 @@ Use at your own risk.
 
 ## License
 
-Intended to be licensed under **LGPL-3.0-or-later** (compatible with `libagent`).
-A `LICENSE` file will be added before the first tagged release.
+Licensed under the **GNU Lesser General Public License v3.0 or later**
+(`LGPL-3.0-or-later`) — see [`COPYING.LESSER`](COPYING.LESSER) (the LGPL terms)
+and [`COPYING`](COPYING) (the GPL terms it builds on). This matches the license
+of the `libagent` / `trezorlib` libraries Treza is built on.
