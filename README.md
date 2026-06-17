@@ -27,7 +27,7 @@ Early development. Issues and pull requests are welcome — see
 | M2 | Key-management UI (PySide6) | ✅ implemented |
 | M3 | System tray + background operation | ✅ implemented |
 | M4 | Onboarding / first-run wizard | ✅ implemented |
-| M5 | Packaging, signing & CI | 🚧 in progress |
+| M5 | Packaging, signing & CI | 🚧 PyInstaller + CI done; signing/notarization pending |
 
 ## Install on Windows
 
@@ -136,6 +136,22 @@ so the agent path is exercised end-to-end without a Trezor.
 
 Pinned dependency set: see `spike/requirements.lock.txt`
 (`libagent==0.16.1`, `trezor==0.20.1`, `trezor_agent==0.13.0`).
+
+## Building a standalone app
+
+A [PyInstaller](https://pyinstaller.org/) spec produces a self-contained
+**onedir** bundle (kept as separate files so the LGPL libraries remain
+replaceable):
+
+```bash
+pip install -e ".[gui,build]"
+pyinstaller packaging/treza.spec --noconfirm   # output in dist/treza/
+```
+
+CI builds this for Windows / macOS / Linux on every `v*` tag
+(`.github/workflows/build.yml`). Code signing (Windows Authenticode) and macOS
+notarization are documented placeholders there pending signing certificates.
+Linux packaging ships the Trezor udev rules from `packaging/linux/`.
 
 ## Security
 

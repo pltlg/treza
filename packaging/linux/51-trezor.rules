@@ -1,0 +1,13 @@
+# Trezor udev rules — required for non-root USB access on Linux.
+# Install to /etc/udev/rules.d/51-trezor.rules then:
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+# Canonical source: https://github.com/trezor/trezor-common/blob/master/udev/51-trezor.rules
+
+# Trezor One
+SUBSYSTEM=="usb", ATTR{idVendor}=="534c", ATTR{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="trezor%n"
+KERNEL=="hidraw*", ATTRS{idVendor}=="534c", ATTRS{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess"
+
+# Trezor (Model T, Safe 3, Safe 5 — Trezor Core family)
+SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="53c0", MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="trezor%n"
+SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="53c1", MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="trezor%n"
+KERNEL=="hidraw*", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="53c1", MODE="0660", GROUP="plugdev", TAG+="uaccess"
