@@ -1,13 +1,13 @@
-"""Signet entry point.
+"""Treza entry point.
 
 The GUI (PySide6) arrives in Milestone 2. Until then this exposes a small
 headless CLI over the Milestone 1 agent core — useful for development and for
 the Milestone 0 hardware validation:
 
-    python -m signet --list                       # show stored identities
-    python -m signet --add ssh://user@host         # add an identity (ed25519)
-    python -m signet --serve                        # run the agent (Ctrl+C to stop)
-    python -m signet --serve --identity ssh://u@h   # serve an ad-hoc identity
+    python -m treza --list                       # show stored identities
+    python -m treza --add ssh://user@host         # add an identity (ed25519)
+    python -m treza --serve                        # run the agent (Ctrl+C to stop)
+    python -m treza --serve --identity ssh://u@h   # serve an ad-hoc identity
 """
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def _parse_identity(s: str, curve: str) -> SshIdentity:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="signet", description=__doc__)
+    parser = argparse.ArgumentParser(prog="treza", description=__doc__)
     parser.add_argument("--list", action="store_true", help="list stored identities")
     parser.add_argument("--add", metavar="IDENTITY", help="add ssh://user@host[:port]")
     parser.add_argument("--remove", metavar="IDENTITY", help="remove ssh://user@host[:port]")

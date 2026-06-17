@@ -13,14 +13,14 @@ from __future__ import annotations
 import pytest
 from libagent.device.trezor import Trezor
 
-from signet.agent.identities import ED25519, NIST256, SshIdentity, export_public_key
-from signet.agent.manager import AgentManager, AgentState
-from signet.agent.ui_bridge import CallbackUI
 from tests.agent_protocol import request_identities_count
+from treza.agent.identities import ED25519, NIST256, SshIdentity, export_public_key
+from treza.agent.manager import AgentManager, AgentState
+from treza.agent.ui_bridge import CallbackUI
 
 pytestmark = pytest.mark.hardware
 
-IDENTITY_STR = "signet-hwtest@example.com"
+IDENTITY_STR = "treza-hwtest@example.com"
 
 
 @pytest.fixture(autouse=True)
@@ -36,7 +36,7 @@ def _attach_ui():
 
 @pytest.mark.parametrize("curve", [ED25519, NIST256])
 def test_export_public_key_real(curve: str) -> None:
-    ident = SshIdentity(user="signet-hwtest", host="example.com", curve=curve)
+    ident = SshIdentity(user="treza-hwtest", host="example.com", curve=curve)
     with Trezor() as dev:
         line = export_public_key(dev, ident)
     print(f"\n{curve}: {line}")
@@ -44,7 +44,7 @@ def test_export_public_key_real(curve: str) -> None:
 
 
 def test_agent_serves_real_device() -> None:
-    identities = [SshIdentity(user="signet-hwtest", host="example.com", curve=ED25519)]
+    identities = [SshIdentity(user="treza-hwtest", host="example.com", curve=ED25519)]
     mgr = AgentManager(Trezor, identities)
     mgr.start()
     try:

@@ -53,7 +53,7 @@ def default_sock_path() -> str:
     """
     if sys.platform == "win32":
         return WINDOWS_OPENSSH_PIPE
-    return tempfile.mktemp(prefix="signet-ssh-agent-")
+    return tempfile.mktemp(prefix="treza-ssh-agent-")
 
 
 StateCallback = Callable[[AgentState, "Exception | None"], None]
@@ -139,7 +139,7 @@ class AgentManager:
         self._stop_event.clear()
         self._ready_event.clear()
         self._error = None
-        self._thread = threading.Thread(target=self._run, name="signet-agent", daemon=True)
+        self._thread = threading.Thread(target=self._run, name="treza-agent", daemon=True)
         self._thread.start()
         if not self._ready_event.wait(timeout=ready_timeout):
             raise TimeoutError("agent did not reach RUNNING state in time")

@@ -1,4 +1,4 @@
-"""Bridge between libagent's device UI callbacks and Signet's app layer.
+"""Bridge between libagent's device UI callbacks and Treza's app layer.
 
 ``libagent.device.ui.UI`` is the object trezorlib calls back into when the
 device needs interaction. We subclass it to surface those events to the GUI:

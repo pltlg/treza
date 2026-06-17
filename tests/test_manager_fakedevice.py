@@ -11,18 +11,18 @@ import sys
 
 from libagent.device.fake_device import FakeDevice
 
-from signet.agent.identities import NIST256, SshIdentity
-from signet.agent.manager import AgentManager, AgentState
 from tests.agent_protocol import request_identities_count
+from treza.agent.identities import NIST256, SshIdentity
+from treza.agent.manager import AgentManager, AgentState
 
 
 def _unique_sock_path() -> str:
     token = os.urandom(8).hex()
     if sys.platform == "win32":
-        return rf"\\.\pipe\signet-test-{token}"
+        return rf"\\.\pipe\treza-test-{token}"
     import tempfile
 
-    return os.path.join(tempfile.gettempdir(), f"signet-test-{token}.sock")
+    return os.path.join(tempfile.gettempdir(), f"treza-test-{token}.sock")
 
 
 def test_state_machine_transitions() -> None:

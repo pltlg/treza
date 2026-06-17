@@ -2,7 +2,7 @@
 
 Proves that a connected Trezor (target: Safe 3) can, *through libagent's Python
 API* (not the CLI), derive an SSH public key and sign a challenge for both
-supported curves. This is the exact code path Signet's AgentManager will use.
+supported curves. This is the exact code path Treza's AgentManager will use.
 
 Run with the project venv, device connected & unlocked:
 
@@ -53,7 +53,7 @@ def derive_and_sign(device: Trezor, identity_str: str, curve_name: str,
     print(f"  format OK  : key type = {parts[0]}")
 
     if do_sign:
-        challenge = b"signet-spike-challenge-0123456789abcdef"
+        challenge = b"treza-spike-challenge-0123456789abcdef"
         sig = device.sign(identity, challenge)
         print(f"  signature  : {len(sig)} bytes (hex head: {sig[:8].hex()})")
         assert len(sig) in (64, 65), f"unexpected signature length {len(sig)}"
@@ -61,8 +61,8 @@ def derive_and_sign(device: Trezor, identity_str: str, curve_name: str,
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Signet Milestone 0 spike")
-    parser.add_argument("--identity", default="ssh://signet-spike@example.com",
+    parser = argparse.ArgumentParser(description="Treza Milestone 0 spike")
+    parser.add_argument("--identity", default="ssh://treza-spike@example.com",
                         help="SSH identity string, e.g. ssh://user@host")
     parser.add_argument("--no-sign", action="store_true",
                         help="only derive public keys, skip signing")
@@ -70,7 +70,7 @@ def main() -> int:
                         default="both")
     args = parser.parse_args()
 
-    print("Signet Milestone 0 — in-process libagent spike")
+    print("Treza Milestone 0 — in-process libagent spike")
     print(f"  identity : {args.identity}")
     print("  Connecting to device (unlock it if prompted)...", flush=True)
 

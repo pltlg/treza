@@ -1,4 +1,4 @@
-"""Milestone 0 / coupling guard: verify every libagent symbol Signet depends on
+"""Milestone 0 / coupling guard: verify every libagent symbol Treza depends on
 exists in the installed version. Run with the project venv:
 
     .venv\\Scripts\\python.exe spike\\check_symbols.py

@@ -1,13 +1,14 @@
-# Signet — Trezor SSH GUI
+# Treza — Trezor SSH GUI
 
-> **Name is a placeholder.** Check availability before publishing.
+> **Note:** "Treza" derives from "Trezor" (a SatoshiLabs trademark). Confirm
+> naming/trademark constraints before any public release or branding.
 
 A cross-platform desktop app (Windows / macOS / Linux) that lets a **Trezor**
 hardware device be used as an SSH key, managed from a GUI — no terminal agent
 configuration. Your private key never leaves the device; every signature is
 confirmed physically on the Trezor.
 
-Signet is an **integration + GUI layer** on top of
+Treza is an **integration + GUI layer** on top of
 [`romanz/trezor-agent`](https://github.com/romanz/trezor-agent)'s `libagent`
 and `trezorlib`. It deliberately does **not** reimplement any cryptography or
 the SSH-agent protocol.
@@ -28,10 +29,10 @@ Early development. See [the implementation plan](docs/) and milestones below.
 ### What works today (headless, no GUI yet)
 
 ```bash
-python -m signet --status                      # detect a connected Trezor
-python -m signet --add ssh://user@host          # add an identity (ed25519)
-python -m signet --list                         # list stored identities
-python -m signet --serve                        # run the SSH agent (Ctrl+C to stop)
+python -m treza --status                      # detect a connected Trezor
+python -m treza --add ssh://user@host          # add an identity (ed25519)
+python -m treza --list                         # list stored identities
+python -m treza --serve                        # run the SSH agent (Ctrl+C to stop)
 ```
 
 On Windows the agent serves the OpenSSH-compatible named pipe
@@ -39,7 +40,7 @@ On Windows the agent serves the OpenSSH-compatible named pipe
 
 ## Architecture
 
-* `signet/agent/` — the **only** place that touches `libagent`/`trezorlib`
+* `treza/agent/` — the **only** place that touches `libagent`/`trezorlib`
   (an upstream-coupling seam, guarded by `tests/test_coupling.py`):
   * `manager.py` — `AgentManager`: runs `libagent`'s serve loop in-process on a
     worker thread, with a `stopped → starting → running → waiting_confirmation →

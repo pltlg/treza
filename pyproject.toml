@@ -3,13 +3,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "signet-ssh"
+name = "treza-ssh"
 version = "0.1.0.dev0"
 description = "Cross-platform desktop GUI to use a Trezor hardware device as an SSH key."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "LGPL-3.0-or-later" }
-authors = [{ name = "Signet contributors" }]
+authors = [{ name = "Treza contributors" }]
 keywords = ["trezor", "ssh", "ssh-agent", "hardware-wallet", "gui"]
 
 # Pinned to the exact versions validated in the Milestone 0 spike.
@@ -32,10 +32,10 @@ dev = [
 ]
 
 [project.scripts]
-signet = "signet.__main__:main"
+treza = "treza.__main__:main"
 
 [tool.setuptools.packages.find]
-include = ["signet*"]
+include = ["treza*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

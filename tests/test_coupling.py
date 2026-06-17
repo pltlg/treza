@@ -1,8 +1,8 @@
 """Upstream-coupling guard.
 
-Signet depends on libagent internals that are NOT a stable public API. If an
+Treza depends on libagent internals that are NOT a stable public API. If an
 upstream upgrade renames or moves any of these, this test fails loudly so we
-fix the single adapter seam (signet/agent/) instead of discovering it at
+fix the single adapter seam (treza/agent/) instead of discovering it at
 runtime on a user's machine. Keep this list in sync with what the agent layer
 actually imports.
 """

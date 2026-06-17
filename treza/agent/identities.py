@@ -1,6 +1,6 @@
 """SSH identity model, public-key export, and persistence.
 
-Thin wrappers over ``libagent`` so Signet stays compatible with the
+Thin wrappers over ``libagent`` so Treza stays compatible with the
 ``trezor-agent`` CLI config format (``<identity|curve>`` per line, read by
 ``libagent.ssh.parse_config``) and reuses its key derivation / formatting.
 """
@@ -25,7 +25,7 @@ KEY_TYPE_BY_CURVE = {
     NIST256: "ecdsa-sha2-nistp256",
 }
 
-_APP = "Signet"
+_APP = "Treza"
 
 
 def default_config_path() -> Path:

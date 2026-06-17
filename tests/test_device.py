@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import pytest
 
-from signet.agent import device
-from signet.agent.device import DeviceStatus
+from treza.agent import device
+from treza.agent.device import DeviceStatus
 
 
 def test_summary_no_device() -> None:

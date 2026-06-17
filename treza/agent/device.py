@@ -21,7 +21,7 @@ from trezorlib.transport import enumerate_devices
 
 log = logging.getLogger(__name__)
 
-APP_NAME = "Signet"
+APP_NAME = "Treza"
 
 
 @dataclasses.dataclass(frozen=True)

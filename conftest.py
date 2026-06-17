@@ -1,4 +1,4 @@
-"""Ensure the project root is importable so `signet` and `tests` resolve."""
+"""Ensure the project root is importable so `treza` and `tests` resolve."""
 import os
 import sys
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 import pytest
 from libagent.device.fake_device import FakeDevice
 
-from signet.agent.identities import (
+from treza.agent.identities import (
     ED25519,
     NIST256,
     IdentityStore,
