@@ -1,0 +1,38 @@
+sequenceDiagram
+    actor U as You
+    participant T as Trezor Safe 3
+    participant A as Treza agent
+    participant S as ssh / git
+    participant R as Server
+
+    Note over U,T: 1. Unlock the device
+    U->>T: Enter PIN (scrambled, on device)
+    T->>T: Decrypt the seed in secure storage
+    opt Passphrase enabled
+        U->>T: Enter passphrase
+        T->>T: Derive hidden-wallet seed
+    end
+
+    Note over U,R: 2. One-time — publish the public key
+    U->>A: Add identity ssh://user@host, click Export
+    A->>T: GetPublicKey(path = SLIP-0013 hash of identity)
+    T->>T: Derive key pair for that path
+    T-->>U: "Export SSH public key?"
+    U->>T: Confirm
+    T-->>A: Public key only (private key stays on device)
+    A-->>U: authorized_keys line
+    U->>R: Add line to ~/.ssh/authorized_keys (or GitHub)
+
+    Note over U,R: 3. Every login — challenge / response
+    S->>R: Connect, offer the public key
+    R-->>S: Random challenge (prove you hold the private key)
+    S->>A: Sign request over named pipe / SSH_AUTH_SOCK
+    A->>T: SignIdentity(challenge)
+    T-->>U: "Sign SSH login for user@host?"
+    U->>T: Confirm
+    T->>T: Sign challenge with the private key (never leaves)
+    T-->>A: Signature
+    A-->>S: Signature
+    S->>R: Signature
+    R->>R: Verify against the stored public key
+    R-->>U: Access granted

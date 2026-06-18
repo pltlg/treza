@@ -15,6 +15,13 @@ Treza is an **integration + GUI layer** on top of
 and `trezorlib`. It deliberately does **not** reimplement any cryptography or
 the SSH-agent protocol — it reuses the battle-tested implementations.
 
+## Documentation
+
+* **[User guide](docs/USER_GUIDE.md)** — step-by-step: install, add an identity,
+  export your key, and connect.
+* **[How it works](docs/HOW_IT_WORKS.md)** — the full pipeline from PIN entry to
+  the server granting access, with a diagram.
+
 ## Status & roadmap
 
 Early development. Issues and pull requests are welcome — see
