@@ -5,4 +5,4 @@ This package is an integration/GUI layer on top of romanz/trezor-agent's
 cryptography or the SSH-agent protocol — see docs/plan for rationale.
 """
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.1.0"
