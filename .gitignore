@@ -23,3 +23,4 @@ Thumbs.db
 
 # PyInstaller (Milestone 5)
 *.spec.bak
+installer/

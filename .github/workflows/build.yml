@@ -34,6 +34,24 @@ jobs:
       - name: Build (onedir)
         run: pyinstaller packaging/treza.spec --noconfirm
 
+      - name: Build Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $ref = "${{ github.ref_name }}"
+          if ($ref -match '^v(.+)$') { $version = $Matches[1] } else { $version = '0.0.0-dev' }
+          Write-Host "Building installer version $version"
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=$version" packaging\windows\treza.iss
+
+      - name: Upload Windows installer
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: treza-windows-installer
+          path: installer/treza-setup.exe
+          if-no-files-found: error
+
       # --- Signing (requires secrets; left as documented placeholders) ---
       # Windows Authenticode:
       #   signtool sign /fd SHA256 /tr <timestamp-url> /td SHA256 \
