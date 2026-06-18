@@ -73,3 +73,18 @@ coll = COLLECT(  # noqa: F821
     a.datas,
     name="treza",
 )
+
+# On macOS also wrap the bundle as a .app so it can be signed + notarized
+# (and double-clicked from Finder).
+if sys.platform == "darwin":
+    app = BUNDLE(  # noqa: F821
+        coll,
+        name="treza.app",
+        icon=None,
+        bundle_identifier="com.github.pltlg.treza",
+        info_plist={
+            "NSHighResolutionCapable": True,
+            "CFBundleShortVersionString": os.environ.get("TREZA_VERSION", "0.0.0"),
+        },
+    )
+

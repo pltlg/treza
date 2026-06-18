@@ -179,9 +179,11 @@ iscc /DMyAppVersion=0.1.0 packaging\windows\treza.iss   # -> installer\treza-set
 
 CI builds all of this for Windows / macOS / Linux on every `v*` tag
 (`.github/workflows/build.yml`) and uploads per-OS bundles plus the Windows
-installer. Code signing (Windows Authenticode) and macOS notarization are
-documented placeholders there pending signing certificates. Linux packaging
-ships the Trezor udev rules from `packaging/linux/`.
+installer. **Code signing (Windows Authenticode) and macOS notarization are
+wired up** and activate automatically once the signing secrets are added — see
+[docs/SIGNING.md](docs/SIGNING.md). Without those secrets, builds still succeed
+and produce **unsigned** artifacts. Linux packaging ships the Trezor udev rules
+from `packaging/linux/`.
 
 ## Security
 
@@ -192,9 +194,9 @@ ships the Trezor udev rules from `packaging/linux/`.
   seed into any app or website — Treza does not need it and never will.
 * Treza performs **no cryptography of its own**; it relies on the audited
   `trezorlib` / `libagent` libraries.
-* Builds are currently **unsigned** (code signing and macOS notarization are
-  planned for M5), so expect OS warnings until then. Build or install only from
-  this repository.
+* Builds are **unsigned** unless signing secrets are configured
+  ([docs/SIGNING.md](docs/SIGNING.md)), so expect SmartScreen / Gatekeeper
+  warnings until then. Build or install only from this repository.
 * Found a security issue? Please report it privately via a
   [GitHub security advisory](https://github.com/pltlg/treza/security/advisories/new)
   rather than a public issue.
