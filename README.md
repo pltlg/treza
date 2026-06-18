@@ -34,11 +34,25 @@ Early development. Issues and pull requests are welcome — see
 | M2 | Key-management UI (PySide6) | ✅ implemented |
 | M3 | System tray + background operation | ✅ implemented |
 | M4 | Onboarding / first-run wizard | ✅ implemented |
-| M5 | Packaging, signing & CI | 🚧 PyInstaller + CI done; signing/notarization pending |
+| M5 | Packaging, signing & CI | 🚧 PyInstaller, CI & Windows installer done; signing/notarization pending |
 
 ## Install on Windows
 
-> No signed installer yet (that's milestone M5). For now you run from source.
+Two ways: a prebuilt installer, or from source.
+
+### Option A — Installer (quickest)
+
+Each tagged build produces a single **`treza-setup.exe`** (Start-Menu shortcut +
+uninstaller). Download `treza-windows-installer` from the **Artifacts** of the
+latest [Build run](https://github.com/pltlg/treza/actions/workflows/build.yml)
+and run it.
+
+> The installer is **not code-signed yet** (M5), so SmartScreen will warn —
+> choose **More info → Run anyway**. Downloading workflow artifacts currently
+> needs a signed-in GitHub account; a Releases page with direct downloads is
+> planned. You still need to free up the SSH-agent pipe once (Option B, step 2).
+
+### Option B — From source
 
 **1. Prerequisites**
 
@@ -155,10 +169,19 @@ pip install -e ".[gui,build]"
 pyinstaller packaging/treza.spec --noconfirm   # output in dist/treza/
 ```
 
-CI builds this for Windows / macOS / Linux on every `v*` tag
-(`.github/workflows/build.yml`). Code signing (Windows Authenticode) and macOS
-notarization are documented placeholders there pending signing certificates.
-Linux packaging ships the Trezor udev rules from `packaging/linux/`.
+On **Windows**, the build also compiles that bundle into a single
+**`treza-setup.exe`** installer with [Inno Setup](https://jrsoftware.org/isinfo.php)
+(`packaging/windows/treza.iss`):
+
+```powershell
+iscc /DMyAppVersion=0.1.0 packaging\windows\treza.iss   # -> installer\treza-setup.exe
+```
+
+CI builds all of this for Windows / macOS / Linux on every `v*` tag
+(`.github/workflows/build.yml`) and uploads per-OS bundles plus the Windows
+installer. Code signing (Windows Authenticode) and macOS notarization are
+documented placeholders there pending signing certificates. Linux packaging
+ships the Trezor udev rules from `packaging/linux/`.
 
 ## Security
 
