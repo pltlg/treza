@@ -7,18 +7,40 @@ on:
 
 jobs:
   build:
-    name: build (${{ matrix.os }})
+    name: build (${{ matrix.osname }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            osname: linux
+          - os: windows-latest
+            osname: windows
+          - os: macos-latest
+            osname: macos
     steps:
       - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+
+      # Derive both the tag label (e.g. v0.0.2, used in file names) and the
+      # numeric version (0.0.2, used for the installer's display version).
+      - name: Resolve version
+        id: ver
+        shell: bash
+        run: |
+          ref="${{ github.ref_name }}"
+          if [[ "$ref" =~ ^v(.+)$ ]]; then
+            tag="$ref"; version="${BASH_REMATCH[1]}"
+          else
+            tag="dev"; version="0.0.0-dev"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Building $tag (version $version)"
 
       - name: Install Qt runtime libs (Linux)
         if: runner.os == 'Linux'
@@ -39,17 +61,16 @@ jobs:
         shell: pwsh
         run: |
           choco install innosetup -y --no-progress
-          $ref = "${{ github.ref_name }}"
-          if ($ref -match '^v(.+)$') { $version = $Matches[1] } else { $version = '0.0.0-dev' }
-          Write-Host "Building installer version $version"
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=$version" packaging\windows\treza.iss
+          $version = "${{ steps.ver.outputs.version }}"
+          $tag = "${{ steps.ver.outputs.tag }}"
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=$version" "/Ftreza-setup-$tag" packaging\windows\treza.iss
 
       - name: Upload Windows installer
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v7
         with:
-          name: treza-windows-installer
-          path: installer/treza-setup.exe
+          name: treza-${{ steps.ver.outputs.tag }}-windows-installer
+          path: installer/treza-setup-${{ steps.ver.outputs.tag }}.exe
           if-no-files-found: error
 
       # --- Signing (requires secrets; left as documented placeholders) ---
@@ -65,6 +86,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: treza-${{ matrix.os }}
+          name: treza-${{ steps.ver.outputs.tag }}-${{ matrix.osname }}
           path: dist/treza
           if-no-files-found: error
