@@ -53,7 +53,7 @@ class _DevicePage(QWizardPage):
             "on Windows, disable the built-in ssh-agent service (see the README)."
         )
         hint.setWordWrap(True)
-        hint.setStyleSheet("color: #5f6368;")
+        hint.setEnabled(False)  # subdued but palette-aware
         layout.addWidget(hint)
         controller.deviceStatusChanged.connect(lambda s: self._label.setText(s.summary))
 

@@ -9,6 +9,7 @@ from .controller import AgentController
 from .icons import app_icon
 from .main_window import MainWindow
 from .onboarding import OnboardingWizard
+from .theme import apply_theme, watch_system_theme
 from .tray import TrayIcon
 
 
@@ -17,6 +18,10 @@ def main(argv: list[str] | None = None) -> int:
     app.setApplicationName("Treza")
     app.setApplicationDisplayName("Treza")
     app.setWindowIcon(app_icon())
+
+    # Follow the OS light/dark theme (and live-update when it changes).
+    apply_theme(app)
+    watch_system_theme(app)
 
     controller = AgentController()
     window = MainWindow(controller)

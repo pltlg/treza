@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
 
         self._hint = QLabel()
         self._hint.setWordWrap(True)
-        self._hint.setStyleSheet("color: #5f6368;")
+        self._hint.setEnabled(False)  # subdued, but palette-aware (legible in dark mode)
         root.addWidget(self._hint)
 
         # Identity table

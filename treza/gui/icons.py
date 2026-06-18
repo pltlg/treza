@@ -50,3 +50,26 @@ def app_icon(size: int = 256) -> QIcon:
     p.drawRect(QRect(cx - stem, size // 2, 2 * stem, size // 3))
     p.end()
     return QIcon(pm)
+
+
+def tray_icon(state: AgentState, size: int = 64) -> QIcon:
+    """The brand logo with a small status-colored badge in the corner.
+
+    Keeps the tray visually consistent with the app/window icon while still
+    showing agent state at a glance.
+    """
+    pm = app_icon(size).pixmap(size, size)
+    p = QPainter(pm)
+    p.setRenderHint(QPainter.Antialiasing)
+    badge = int(size * 0.46)
+    x = size - badge
+    y = size - badge
+    # White ring so the badge reads on top of the logo.
+    p.setPen(Qt.NoPen)
+    p.setBrush(QColor("white"))
+    ring = max(2, size // 24)
+    p.drawEllipse(QRect(x - ring, y - ring, badge + 2 * ring, badge + 2 * ring))
+    p.setBrush(QColor(_COLORS.get(state, "#9aa0a6")))
+    p.drawEllipse(QRect(x, y, badge, badge))
+    p.end()
+    return QIcon(pm)

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from ..agent.manager import AgentState
 from .controller import AgentController
-from .icons import status_icon
+from .icons import tray_icon
 from .main_window import _STATE_TEXT, MainWindow
 
 
@@ -31,7 +31,7 @@ class TrayIcon(QSystemTrayIcon):
         self._on_state(controller.state)
 
     def _on_state(self, state: AgentState) -> None:
-        self.setIcon(status_icon(state))
+        self.setIcon(tray_icon(state))
         self.setToolTip(f"Treza — {_STATE_TEXT.get(state, str(state))}")
         running = state in (AgentState.RUNNING, AgentState.WAITING_CONFIRMATION)
         self._toggle_action.setText("Stop agent" if running else "Start agent")
