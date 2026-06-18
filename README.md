@@ -42,15 +42,13 @@ Two ways: a prebuilt installer, or from source.
 
 ### Option A — Installer (quickest)
 
-Each tagged build produces a single **`treza-setup.exe`** (Start-Menu shortcut +
-uninstaller). Download `treza-windows-installer` from the **Artifacts** of the
-latest [Build run](https://github.com/pltlg/treza/actions/workflows/build.yml)
-and run it.
+Download **`treza-setup-<version>.exe`** from the
+[latest release](https://github.com/pltlg/treza/releases/latest) and run it
+(Start-Menu shortcut + uninstaller).
 
-> The installer is **not code-signed yet** (M5), so SmartScreen will warn —
-> choose **More info → Run anyway**. Downloading workflow artifacts currently
-> needs a signed-in GitHub account; a Releases page with direct downloads is
-> planned. You still need to free up the SSH-agent pipe once (Option B, step 2).
+> The installer is **not code-signed yet** ([signing setup](docs/SIGNING.md)),
+> so SmartScreen will warn — choose **More info → Run anyway**. You still need to
+> free up the SSH-agent pipe once (Option B, step 2 below).
 
 ### Option B — From source
 
