@@ -14,9 +14,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Upload Windows installer
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: treza-windows-installer
           path: installer/treza-setup.exe
@@ -63,7 +63,7 @@ jobs:
       #   xcrun stapler staple dist/treza/treza.app
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: treza-${{ matrix.os }}
           path: dist/treza
